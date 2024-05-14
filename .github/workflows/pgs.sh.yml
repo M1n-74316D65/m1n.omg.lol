@@ -1,0 +1,24 @@
+name: pgs.sh
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: publish to pgs
+        uses: picosh/pgs-action@v3
+        with:
+          user: erock
+          key: ${{ secrets.PRIVATE_KEY }}
+          # trailing slash is important (we use rsync)
+          src: "./"
+          # update or create a new project on-the-fly
+          project: "omglolprofile"
